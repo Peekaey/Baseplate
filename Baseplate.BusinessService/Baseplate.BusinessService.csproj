@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Baseplate.DataService\Baseplate.DataService.csproj" />
+    </ItemGroup>
+
 </Project>

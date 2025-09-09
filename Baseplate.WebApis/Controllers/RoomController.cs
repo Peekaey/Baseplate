@@ -1,3 +1,4 @@
+using Baseplate.BusinessService.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Baseplate.WebApis.Controllers;
@@ -7,19 +8,23 @@ namespace Baseplate.WebApis.Controllers;
 public class RoomController : ControllerBase
 {
     private readonly ILogger<RoomController> _logger;
+    private readonly IRoomBusinessService _roomBusinessService;
     
-    public RoomController(ILogger<RoomController> logger)
+    
+    
+    public RoomController(ILogger<RoomController> logger, IRoomBusinessService roomBusinessService)
     {
         _logger = logger;
+        _roomBusinessService = roomBusinessService;
     }
 
-    [HttpPost(Name = "Create")]
+    [HttpPost(Name = "create")]
     public IActionResult CreateRoom()
     {
         return Ok();
     }
 
-    [HttpGet("{roomId}", Name = "JoinRoom")]
+    [HttpGet("{roomId}", Name = "join")]
     public IActionResult JoinRoom(int roomId)
     {
         return Ok();

@@ -24,6 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Baseplate.BusinessService\Baseplate.BusinessService.csproj" />
       <ProjectReference Include="..\Baseplate.DataService\Baseplate.DataService.csproj" />
     </ItemGroup>
 
