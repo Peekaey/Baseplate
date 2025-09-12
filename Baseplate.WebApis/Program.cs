@@ -1,5 +1,9 @@
 
+using Baseplate.BusinessService.DatabaseServices;
+using Baseplate.BusinessService.Interfaces;
 using Baseplate.DataService;
+using Baseplate.DataService.Interfaces;
+using Baseplate.DataService.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Baseplate.WebApis;
@@ -9,22 +13,32 @@ public class Program
     {
         Console.WriteLine("Starting Baseplate...");
         var builder = WebApplication.CreateBuilder(args);
-        
+        RegisterApplicationServices(builder);
         // Add services to the container.
         builder.Services.AddControllers();
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
         ConfigureDatabaseServices(builder);
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowSvelteKit", policy =>
+            {
+                policy.WithOrigins("http://localhost:5180",
+                        "http://localhost:5175"
+                    ).AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+        });
         var app = builder.Build();
-
+        app.UseCors("AllowSvelteKit");
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
         }
 
-        app.UseHttpsRedirection();
+        // app.UseHttpsRedirection();
 
         app.UseAuthorization();
 
@@ -33,6 +47,17 @@ public class Program
         InitialiseDatabase(app);
 
         app.Run();
+    }
+
+    private static void RegisterApplicationServices(WebApplicationBuilder builder)
+    {
+        builder.Services.AddScoped<IRoomBusinessService, RoomBusinessService>();
+        builder.Services.AddScoped<IRoomService, RoomService>();
+        builder.Services.AddScoped<IMessageBusinessService, MessageBusinessService>();
+        builder.Services.AddScoped<IMessageService, MessageService>();
+        builder.Services.AddScoped<IAttachmentBusinessService, AttachmentBusinessService>();
+        builder.Services.AddScoped<IAttachmentService, AttachmentService>();
+        
     }
     
     private static void ConfigureDatabaseServices(WebApplicationBuilder builder)
