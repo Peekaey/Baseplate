@@ -2,11 +2,17 @@ import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanstackDevtools } from '@tanstack/react-devtools'
 
-import Header from '../components/Header'
+import Header from '../components/layout/Header'
+import {ThemeProvider} from "@/components/ui/theme-provider.tsx";
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 
+
+const queryClient = new QueryClient()
 export const Route = createRootRoute({
   component: () => (
     <>
+        <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
       <Header />
       <Outlet />
       <TanstackDevtools
@@ -20,6 +26,8 @@ export const Route = createRootRoute({
           },
         ]}
       />
+        </ThemeProvider>
+        </QueryClientProvider>
     </>
   ),
 })

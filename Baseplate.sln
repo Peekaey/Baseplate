@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Baseplate.Models", "Basepla
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Baseplate.Helpers", "Baseplate.Helpers\Baseplate.Helpers.csproj", "{8C5D4E9D-7E78-4CAC-AFCE-AD2CA61735E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Baseplate.Messaging", "Baseplate.Messaging\Baseplate.Messaging.csproj", "{CF032815-B48E-4FAC-A998-4AD03AE8E733}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{8C5D4E9D-7E78-4CAC-AFCE-AD2CA61735E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C5D4E9D-7E78-4CAC-AFCE-AD2CA61735E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C5D4E9D-7E78-4CAC-AFCE-AD2CA61735E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF032815-B48E-4FAC-A998-4AD03AE8E733}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF032815-B48E-4FAC-A998-4AD03AE8E733}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF032815-B48E-4FAC-A998-4AD03AE8E733}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF032815-B48E-4FAC-A998-4AD03AE8E733}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

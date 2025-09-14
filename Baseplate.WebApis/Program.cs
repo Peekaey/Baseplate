@@ -22,16 +22,22 @@ public class Program
 
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowSvelteKit", policy =>
+            options.AddPolicy("AllowReact", policy =>
             {
-                policy.WithOrigins("http://localhost:5180",
-                        "http://localhost:5175"
+                policy.WithOrigins("http://localhost:3000",
+                        "http://localhost:3001",
+                        "http://localhost:3002",
+                        "http://localhost:3003",
+                        "http://localhost:3004",
+                        "http://localhost:3005",
+                        "http://localhost:3006",
+                        "http://localhost:3007"
                     ).AllowAnyHeader()
                     .AllowAnyMethod();
             });
         });
         var app = builder.Build();
-        app.UseCors("AllowSvelteKit");
+        app.UseCors("AllowReact");
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {

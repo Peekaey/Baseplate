@@ -3,6 +3,7 @@ using Baseplate.DataService.Interfaces;
 using Baseplate.Helpers;
 using Baseplate.Models.Database;
 using Baseplate.Models.Dtos;
+using Baseplate.Models.Responses;
 using Baseplate.Models.Results;
 using Microsoft.Extensions.Logging;
 
@@ -19,7 +20,7 @@ public class RoomBusinessService : IRoomBusinessService
         _roomService = roomService;
     }
 
-    public CreateResult<RoomDto> CreateRoom()
+    public CreateResult<string> CreateRoom()
     {
         Room room = new Room
         {
@@ -30,7 +31,7 @@ public class RoomBusinessService : IRoomBusinessService
 
         if (result.IsSuccess == false)
         {
-            return CreateResult<RoomDto>.AsError(result.ErrorMessage);
+            return CreateResult<string>.AsError(result.ErrorMessage);
         }
 
         RoomDto roomDto = new RoomDto
@@ -39,7 +40,7 @@ public class RoomBusinessService : IRoomBusinessService
             ShareableSlug = result.CreatedEntity.ShareableSlug,
             CreatedAtUtc = result.CreatedEntity.CreatedAtUtc,
         };
-        return CreateResult<RoomDto>.AsSuccess(result.CreatedId, roomDto);
+        return CreateResult<string>.AsSuccess(result.CreatedId, result.CreatedEntity.ShareableSlug);
     }
 
     public GetResult<RoomDto> GetRoomDataBySlug(string roomSlug)
@@ -55,11 +56,52 @@ public class RoomBusinessService : IRoomBusinessService
         {
             Id = room.Id,
             ShareableSlug = room.ShareableSlug,
-            CreatedAtUtc = room.CreatedAtUtc,
+            CreatedAtUtc = room.CreatedAtUtc.ConvertToAest(),
             Messages = room.Messages
         };
         
         return GetResult<RoomDto>.AsSuccess(roomDto);
+    }
+
+    public GetResult<GetRoomResponse> GetRoomDataBySlugResponse(string roomSlug)
+    {
+        Room? room = _roomService.GetRoomDataBySlug(roomSlug);
+
+        if (room == null)
+        {
+            return GetResult<GetRoomResponse>.AsNotFound();
+        }
+
+        try
+        {
+
+            //TODO Optimise this monstrosity
+            GetRoomResponse roomResponse = new GetRoomResponse
+            {
+                Slug = room.ShareableSlug,
+                CreatedAt = room.CreatedAtUtc.ConvertToAest(),
+                Messages = room.Messages.Select(message => new MessageApiDto
+                {
+                    CreatedAt = message.CreatedAtUtc.ConvertToAest(),
+                    MessageContent = message.MessageContent,
+                    Attachments = message.Attachments.Select(attachment => new AttachmentApiDto
+                    {
+                        AttachmentName = attachment.AttachmentName,
+                        AttachmentExtension = attachment.AttachmentExtension,
+                        AttachmentSizeBytes = attachment.AttachmentSizeBytes,
+                        AttachmentUrl = attachment.StorageKey,
+                        CreatedAt = attachment.CreatedAtUtc.ConvertToAest(),
+                    }).ToList()
+                }).ToList()
+            };
+
+            return GetResult<GetRoomResponse>.AsSuccess(roomResponse);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            return GetResult<GetRoomResponse>.AsError(e.Message);
+        }
     }
     
 }

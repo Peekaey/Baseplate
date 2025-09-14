@@ -1,6 +1,7 @@
 using System.Net;
 using Baseplate.BusinessService.Interfaces;
 using Baseplate.Models.Dtos;
+using Baseplate.Models.Responses;
 using Baseplate.Models.Results;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,34 +24,41 @@ public class RoomController : ControllerBase
     public IActionResult CreateRoom()
     {
         //TODO Do Security Validations Here
-        CreateResult<RoomDto> saveResult = _roomBusinessService.CreateRoom();
+        CreateResult<string> saveResult = _roomBusinessService.CreateRoom();
 
         if (saveResult.IsSuccess == false)
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
-        
-        return Ok(saveResult.CreatedEntity);
+
+        CreateRoomResponse response = new CreateRoomResponse
+        {
+            Slug = saveResult.CreatedEntity
+        };
+        return Ok(response);
     }
 
-    [HttpGet("{roomId}", Name = "join")]
-    public IActionResult JoinRoom([FromBody] string roomSlug)
+    [HttpGet("join/{roomId}", Name = "join")]
+    public IActionResult JoinRoom(string roomId)
     {
         if (ModelState.IsValid == false)
         {
             return BadRequest(ModelState);
         }
-        
-        GetResult<RoomDto> getResult = _roomBusinessService.GetRoomDataBySlug(roomSlug);
+
+        GetResult<GetRoomResponse> getResult = _roomBusinessService.GetRoomDataBySlugResponse(roomId);
+
+        if (getResult.NotFound == true)
+        {
+            return NotFound();
+        }
 
         if (getResult.IsSuccess == false)
         {
-            return StatusCode(StatusCodes.Status404NotFound);
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
-        
-        return Ok();
+
+        return Ok(getResult.Entity);
     }
 
-    
-    
 }

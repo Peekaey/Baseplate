@@ -1,10 +1,12 @@
 using Baseplate.Models.Dtos;
+using Baseplate.Models.Responses;
 using Baseplate.Models.Results;
 
 namespace Baseplate.BusinessService.Interfaces;
 
 public interface IRoomBusinessService
 {
-    CreateResult<RoomDto> CreateRoom();
+    CreateResult<string> CreateRoom();
     GetResult<RoomDto> GetRoomDataBySlug(string roomSlug);
+    GetResult<GetRoomResponse> GetRoomDataBySlugResponse(string roomSlug);
 }
