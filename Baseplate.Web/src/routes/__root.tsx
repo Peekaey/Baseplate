@@ -6,14 +6,15 @@ import Header from '../components/layout/Header'
 import {ThemeProvider} from "@/components/ui/theme-provider.tsx";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 
-
+import {Toaster} from '@/components/ui/sonner.tsx';
 const queryClient = new QueryClient()
 export const Route = createRootRoute({
   component: () => (
     <>
         <QueryClientProvider client={queryClient}>
         <ThemeProvider>
-      <Header />
+            <Toaster />
+            <Header />
       <Outlet />
       <TanstackDevtools
         config={{

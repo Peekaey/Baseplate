@@ -1,9 +1,11 @@
 using System.Net;
 using Baseplate.BusinessService.Interfaces;
+using Baseplate.Messaging;
 using Baseplate.Models.Dtos;
 using Baseplate.Models.Responses;
 using Baseplate.Models.Results;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Baseplate.WebApis.Controllers;
 
@@ -13,11 +15,13 @@ public class RoomController : ControllerBase
 {
     private readonly ILogger<RoomController> _logger;
     private readonly IRoomBusinessService _roomBusinessService;
+    private readonly IHubContext<MessageHub>  _hubContext;
     
-    public RoomController(ILogger<RoomController> logger, IRoomBusinessService roomBusinessService)
+    public RoomController(ILogger<RoomController> logger, IRoomBusinessService roomBusinessService, IHubContext<MessageHub> hubContext)
     {
         _logger = logger;
         _roomBusinessService = roomBusinessService;
+        _hubContext = hubContext;
     }
 
     [HttpPost("create")]
@@ -38,8 +42,8 @@ public class RoomController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("join/{roomId}", Name = "join")]
-    public IActionResult JoinRoom(string roomId)
+    [HttpGet("get/{roomId}", Name = "get")]
+    public IActionResult GetRoom(string roomId)
     {
         if (ModelState.IsValid == false)
         {
@@ -60,5 +64,6 @@ public class RoomController : ControllerBase
 
         return Ok(getResult.Entity);
     }
+    
 
 }

@@ -1,4 +1,4 @@
-import type {CreateRoomResult, GetRoomResult} from "@/types/result.t.ts";
+import type {CreateMessageResult, CreateRoomResult, GetRoomResult} from "@/types/result.t.ts";
 import type {CreateRoomResponse, GetRoomResponse} from "@/types/response.t.ts";
 
 
@@ -18,8 +18,26 @@ export async function CreateRoomApiRequest(): Promise<CreateRoomResult> {
     return {success: true, slug: response_data.slug}
 }
 
+export async function CreateMessageApiRequest(messageContent: string, roomId: string): Promise<CreateMessageResult> {
+    const endpoint_url = `${base_url}/api/v1/message/create`
+    const response = await fetch(endpoint_url, {
+        method: "POST",
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            message: messageContent,
+            roomId: roomId,
+        })
+    })
+    
+    if (!response.ok) {
+        return {success: false}
+    }
+    const response_data: CreateMessageResult = await response.json();
+    return {success: true, message: response_data.message}
+}
+
 export async function GetRoomApiRequest(slug: string): Promise<GetRoomResponse | undefined> {
-    const endpoint_url = `${base_url}/api/v1/room/join/${slug}`
+    const endpoint_url = `${base_url}/api/v1/room/get/${slug}`
     
     try {
     const response = await fetch(endpoint_url, {

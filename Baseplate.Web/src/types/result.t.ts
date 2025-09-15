@@ -1,4 +1,5 @@
 import type {GetRoomResponse} from "@/types/response.t.ts";
+import type {Message} from "@/types/message.t.ts";
 
 export interface CreateRoomResult {
     success: boolean;
@@ -8,4 +9,9 @@ export interface CreateRoomResult {
 export interface GetRoomResult {
     success: boolean;
     roomResponse?: GetRoomResponse;
+}
+
+export interface CreateMessageResult {
+    success: boolean;
+    message?: Message;
 }

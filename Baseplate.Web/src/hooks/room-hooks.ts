@@ -3,7 +3,6 @@ import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {CreateRoomApiRequest} from "@/lib/api.ts";
 import {toast} from "sonner";
 import type {CreateRoomResult, GetRoomResult} from "@/types/result.t.ts";
-import type {GetRoomResponse} from "@/types/response.t.ts";
 
 
 export function useCreateRoom() {

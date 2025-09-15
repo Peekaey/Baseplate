@@ -32,7 +32,7 @@ public class RoomService : IRoomService
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error saving new room to database");
+            _logger.LogError(e, e.Message);
             return CreateResult<Room>.AsError("Error saving new room to database", e);
         }
     }
@@ -43,5 +43,11 @@ public class RoomService : IRoomService
             .Include(r => r.Messages)
             .ThenInclude(r => r.Attachments)
             .FirstOrDefault();
+    }
+
+    public int? GetRoomIdBySlug(string roomSlug)
+    {
+        return _dataContext.Rooms.Where(r => r.ShareableSlug == roomSlug)
+            .Select(r => r.Id).FirstOrDefault();
     }
 }

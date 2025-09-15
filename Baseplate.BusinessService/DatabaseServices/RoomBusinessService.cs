@@ -103,5 +103,18 @@ public class RoomBusinessService : IRoomBusinessService
             return GetResult<GetRoomResponse>.AsError(e.Message);
         }
     }
+
+    public GetResult<int> GetRoomIdBySlug(string roomSlug)
+    {
+        int? roomId = _roomService.GetRoomIdBySlug(roomSlug);
+
+        if (roomId == null)
+        {
+            return GetResult<int>.AsNotFound();
+        }
+        
+        return GetResult<int>.AsSuccess(roomId.Value);
+        
+    }
     
 }

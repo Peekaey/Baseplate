@@ -4,6 +4,7 @@ using Baseplate.BusinessService.Interfaces;
 using Baseplate.DataService;
 using Baseplate.DataService.Interfaces;
 using Baseplate.DataService.Services;
+using Baseplate.Messaging;
 using Microsoft.EntityFrameworkCore;
 
 namespace Baseplate.WebApis;
@@ -18,6 +19,15 @@ public class Program
         builder.Services.AddControllers();
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
+        
+        // SignalR config
+        builder.Services.AddSignalR(options =>
+        {
+            options.EnableDetailedErrors = true;
+            options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+            options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
+        });
+
         ConfigureDatabaseServices(builder);
 
         builder.Services.AddCors(options =>
@@ -49,7 +59,7 @@ public class Program
         app.UseAuthorization();
 
         app.MapControllers();
-        
+        app.MapHub<MessageHub>("/messageHub");
         InitialiseDatabase(app);
 
         app.Run();
