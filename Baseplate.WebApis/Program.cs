@@ -73,6 +73,7 @@ public class Program
         builder.Services.AddScoped<IMessageService, MessageService>();
         builder.Services.AddScoped<IAttachmentBusinessService, AttachmentBusinessService>();
         builder.Services.AddScoped<IAttachmentService, AttachmentService>();
+        builder.Services.AddSingleton<IMessageHub, MessageHub>();
         
     }
     

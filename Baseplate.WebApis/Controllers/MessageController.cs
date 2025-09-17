@@ -1,8 +1,11 @@
 using Baseplate.BusinessService.Interfaces;
+using Baseplate.Messaging;
+using Baseplate.Messaging.Interfaces;
 using Baseplate.Models.Dtos;
 using Baseplate.Models.Requests;
 using Baseplate.Models.Results;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Baseplate.WebApis.Controllers;
 
@@ -13,13 +16,17 @@ public class MessageController : ControllerBase
     private readonly ILogger<MessageController> _logger;
     private readonly IMessageBusinessService  _messageBusinessService;
     private readonly IRoomBusinessService _roomBusinessService;
+    private readonly IHubContext<MessageHub>  _hubContext;
+    private readonly IMessageHub  _messageHub;
 
     public MessageController(ILogger<MessageController> logger, IMessageBusinessService messageBusinessService,
-        IRoomBusinessService roomBusinessService)
+        IRoomBusinessService roomBusinessService, IHubContext<MessageHub> hubContext, IMessageHub messageHub)
     {
         _logger = logger;
         _messageBusinessService = messageBusinessService;
         _roomBusinessService = roomBusinessService;
+        _hubContext = hubContext;
+        _messageHub = messageHub;
     }
 
     [HttpPost("create", Name = "create")]
@@ -43,7 +50,12 @@ public class MessageController : ControllerBase
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
+        
+        _messageHub.SendMessage(saveMessageResult.CreatedEntity.CreatedAt,request.Message, request.RoomId);
         return Ok(saveMessageResult.CreatedEntity);
     }
+    
+    
+    
     
 }

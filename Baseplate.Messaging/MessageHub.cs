@@ -1,12 +1,26 @@
+using Baseplate.Messaging.Interfaces;
+using Baseplate.Models.Responses;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Baseplate.Messaging;
 
-public class MessageHub : Hub
+public class MessageHub : Hub, IMessageHub
 {
-    public async Task SendMessage(string user, string message)
+    private readonly IHubContext<MessageHub> _hubContext;
+
+    public MessageHub(IHubContext<MessageHub> hubContext)
     {
-        await Clients.All.SendAsync("ReceiveMessage", user, message);
+        _hubContext = hubContext;
+    }
+    public async Task SendMessage(DateTime createdAt, string messageContent, string roomSlug)
+    {
+        ReceiveMessageResponse dto = new ReceiveMessageResponse
+        {
+            CreatedDate = createdAt,
+            MessageContent = messageContent,
+        };
+        _hubContext.Clients.Group(roomSlug).SendAsync("ReceiveMessage", dto);
+
     }
     
     public async Task JoinRoom(string roomSlug)

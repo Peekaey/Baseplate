@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Baseplate.BusinessService.Interfaces;
 using Baseplate.DataService.Interfaces;
 using Baseplate.Helpers;
@@ -83,7 +84,7 @@ public class RoomBusinessService : IRoomBusinessService
                 Messages = room.Messages.Select(message => new MessageApiDto
                 {
                     CreatedAt = message.CreatedAtUtc.ConvertToAest(),
-                    MessageContent = message.MessageContent,
+                    MessageContent = JsonSerializer.Deserialize<string>(message.MessageContent),
                     Attachments = message.Attachments.Select(attachment => new AttachmentApiDto
                     {
                         AttachmentName = attachment.AttachmentName,

@@ -6,3 +6,4 @@ export interface Message {
     createdAt: Date;
     attachments: Attachment[];
 }
+
