@@ -50,4 +50,28 @@ public class RoomService : IRoomService
         return _dataContext.Rooms.Where(r => r.ShareableSlug == roomSlug)
             .Select(r => r.Id).FirstOrDefault();
     }
+
+    public async Task DeleteStaleRoomsBackgroundJob(int previousDaysCount)
+    {
+        DateTime cutOff = DateTime.Now.AddDays(-previousDaysCount);
+        
+            using (var transaction = new TransactionScope()) {
+                List<int> roomIds = _dataContext.Rooms.Where(r => r.CreatedAtUtc <= cutOff)
+                    .Select(r => r.Id).ToList();
+
+                if (roomIds.Count != 0)
+                {
+                    var roomsDeleted = _dataContext.Rooms.Where(r => roomIds.Contains(r.Id))
+                        .ExecuteDelete();
+                    transaction.Complete();
+                    _logger.LogInformation($"Deleted {roomIds.Count} rooms from database");
+                }
+                else
+                {
+                    _logger.LogInformation($"0 Rooms required to be deleted from database");
+                }
+                
+            }
+        
+    }
 }

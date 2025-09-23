@@ -10,4 +10,5 @@ public interface IRoomBusinessService
     GetResult<RoomDto> GetRoomDataBySlug(string roomSlug);
     GetResult<GetRoomResponse> GetRoomDataBySlugResponse(string roomSlug);
     GetResult<int> GetRoomIdBySlug(string roomSlug);
+    Task DeleteStaleChatroomsBackgroundJob(int previousDaysCount);
 }

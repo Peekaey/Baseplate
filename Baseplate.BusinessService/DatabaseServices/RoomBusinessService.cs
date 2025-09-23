@@ -117,5 +117,10 @@ public class RoomBusinessService : IRoomBusinessService
         return GetResult<int>.AsSuccess(roomId.Value);
         
     }
+
+    public async Task DeleteStaleChatroomsBackgroundJob(int previousDaysCount)
+    {
+        _roomService.DeleteStaleRoomsBackgroundJob(previousDaysCount);
+    }
     
 }

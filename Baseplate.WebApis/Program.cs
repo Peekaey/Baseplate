@@ -5,7 +5,11 @@ using Baseplate.DataService;
 using Baseplate.DataService.Interfaces;
 using Baseplate.DataService.Services;
 using Baseplate.Messaging;
+using Baseplate.Messaging.Interfaces;
+using Baseplate.Models;
+using Basesplate.BackgroundService.Jobs;
 using Microsoft.EntityFrameworkCore;
+using Quartz;
 
 namespace Baseplate.WebApis;
 public class Program
@@ -14,6 +18,8 @@ public class Program
     {
         Console.WriteLine("Starting Baseplate...");
         var builder = WebApplication.CreateBuilder(args);
+        BindConfigs(builder);
+        RegisterBackgroundJobs(builder);
         RegisterApplicationServices(builder);
         // Add services to the container.
         builder.Services.AddControllers();
@@ -74,7 +80,28 @@ public class Program
         builder.Services.AddScoped<IAttachmentBusinessService, AttachmentBusinessService>();
         builder.Services.AddScoped<IAttachmentService, AttachmentService>();
         builder.Services.AddSingleton<IMessageHub, MessageHub>();
+        builder.Services.AddQuartzHostedService(q =>
+        {
+            q.AwaitApplicationStarted = true;
+            q.WaitForJobsToComplete = true;
+        });
+    }
+
+    private static void RegisterBackgroundJobs(WebApplicationBuilder builder)
+    {
         
+        builder.Services.AddQuartz(q => 
+        { 
+            var jobKey = new JobKey("DeleteStaleChatrooms");
+            q.AddJob<DeleteStaleChatrooms>(opts => opts.WithIdentity(jobKey));
+            
+            q.AddTrigger(opts => opts
+                .ForJob(jobKey)
+                .WithIdentity("DeleteStaleChatrooms-trigger")
+                .WithCronSchedule("0 0 23 ? * SUN")
+                .WithDescription("Runs every 7 days at 11 PM"));
+
+        });
     }
     
     private static void ConfigureDatabaseServices(WebApplicationBuilder builder)
@@ -119,6 +146,14 @@ public class Program
                 throw;
             }
         }
+    }
+
+    private static void BindConfigs(WebApplicationBuilder builder)
+    {
+        builder.Services.Configure<QuartzJobsConfig>(
+            builder.Configuration.GetSection(QuartzJobsConfig.SectionName));
+        
+        builder.Services.Configure<DatabaseConfig>(builder.Configuration.GetSection("Database"));
     }
 }
 
