@@ -72,6 +72,10 @@ public class RoomService : IRoomService
                 }
                 
             }
-        
+    }
+    
+    public bool ValidateRoomExists(string roomSlug)
+    {
+        return _dataContext.Rooms.Any(r => r.ShareableSlug == roomSlug);
     }
 }

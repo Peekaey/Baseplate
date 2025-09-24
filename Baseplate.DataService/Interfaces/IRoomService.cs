@@ -9,5 +9,5 @@ public interface IRoomService
     Room? GetRoomDataBySlug(string roomSlug);
     int? GetRoomIdBySlug(string roomSlug);
     Task DeleteStaleRoomsBackgroundJob(int previousDaysCount);
-
+    bool ValidateRoomExists(string roomSlug);
 }

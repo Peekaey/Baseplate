@@ -15,3 +15,9 @@ export interface CreateMessageResult {
     success: boolean;
     message?: Message;
 }
+
+export interface ValidateRoomResult {
+    success: boolean;
+    exists?: boolean;
+    slug?: string;
+}

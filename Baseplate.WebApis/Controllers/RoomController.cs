@@ -64,6 +64,24 @@ public class RoomController : ControllerBase
 
         return Ok(getResult.Entity);
     }
+
+    [HttpGet("validate/{roomId}", Name = "validate")]
+    public IActionResult ValidateRoom(string roomId)
+    {
+        if (ModelState.IsValid == false)
+        {
+            return BadRequest(ModelState);
+        }
+        
+        bool isValid = _roomBusinessService.ValidateRoomExists(roomId);
+
+        if (isValid == false)
+        {
+            return NotFound();
+        }
+        
+        return Ok();
+    }
     
 
 }

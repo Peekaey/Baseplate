@@ -1,8 +1,8 @@
 import {useRouter} from "@tanstack/react-router";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {CreateRoomApiRequest} from "@/lib/api.ts";
+import {CreateRoomApiRequest, ValidateRoomApiRequest} from "@/lib/api.ts";
 import {toast} from "sonner";
-import type {CreateRoomResult, GetRoomResult} from "@/types/result.t.ts";
+import type {CreateRoomResult, GetRoomResult, ValidateRoomResult} from "@/types/result.t.ts";
 
 
 export function useCreateRoom() {
@@ -25,3 +25,27 @@ export function useCreateRoom() {
     })
 }
 
+export function useJoinRoom() {
+    const router = useRouter();
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (slug: string) => ValidateRoomApiRequest(slug),
+        onSuccess: (validateRoomResult: ValidateRoomResult) => {
+            if (validateRoomResult.success == true) {
+                if (validateRoomResult.exists) {
+                    router.navigate({
+                        to: `/room/${validateRoomResult.slug}`
+                    })
+                } else {
+                    toast.error(`Room "${validateRoomResult.slug}" does not exist`)
+                }
+            } else {
+                toast.error("Error when validating room")
+            }
+        },
+        onError: (error) => {
+            toast.error("Unexpected error when validating room")
+        }
+    })
+}

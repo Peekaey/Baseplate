@@ -1,10 +1,5 @@
 
 
-export interface Room {
-    
-}
-
-
 
 export interface Attachment {
     attachmentExtension: string;

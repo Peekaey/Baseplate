@@ -123,4 +123,9 @@ public class RoomBusinessService : IRoomBusinessService
         _roomService.DeleteStaleRoomsBackgroundJob(previousDaysCount);
     }
     
+    public bool ValidateRoomExists(string roomSlug)
+    {
+        return _roomService.ValidateRoomExists(roomSlug);
+    }
+    
 }

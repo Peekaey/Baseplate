@@ -1,4 +1,4 @@
-import type {CreateMessageResult, CreateRoomResult} from "@/types/result.t.ts";
+import type {CreateMessageResult, CreateRoomResult, ValidateRoomResult} from "@/types/result.t.ts";
 import type {CreateRoomResponse, GetRoomResponse} from "@/types/response.t.ts";
 
 
@@ -48,9 +48,6 @@ export async function GetRoomApiRequest(slug: string): Promise<GetRoomResponse |
         if (response.status === 404) {
             throw new Error(`Room "${slug}" does not exist`);
         }
-        if (response.status === 403) {
-            throw new Error(`Access denied to room "${slug}"`);
-        }
         if (response.status >= 500) {
             throw new Error('Server error. Please try again later.');
         }
@@ -60,5 +57,28 @@ export async function GetRoomApiRequest(slug: string): Promise<GetRoomResponse |
     return roomData
     } catch (error) {
         throw new Error('Unexpected error when attempting to join room')
+    }
+}
+
+export async function ValidateRoomApiRequest(slug: string): Promise<ValidateRoomResult> {
+    const endpoint_url = `${base_url}/api/v1/room/validate/${slug}`
+    
+    try {
+        const response = await fetch(endpoint_url, {
+            method: "GET",
+            headers: {'Content-Type': 'application/json'},
+        })
+
+        if (!response.ok) {
+            
+            if (response.status === 404) {
+                return {success: true, exists: false, slug: slug}
+            }
+            return {success: false, exists: false, slug: slug}
+        }
+        
+        return {success: true, exists: true, slug: slug}
+    } catch (error) {
+        throw new Error('Unexpected error when attempting to validate room')
     }
 }
