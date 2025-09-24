@@ -1,8 +1,8 @@
-import type {CreateMessageResult, CreateRoomResult, GetRoomResult} from "@/types/result.t.ts";
+import type {CreateMessageResult, CreateRoomResult} from "@/types/result.t.ts";
 import type {CreateRoomResponse, GetRoomResponse} from "@/types/response.t.ts";
 
 
-const base_url = 'http://localhost:5175'
+const base_url:string  = import.meta.env.VITE_BACKEND_URL as string;
 
 export async function CreateRoomApiRequest(): Promise<CreateRoomResult> {
     const endpoint_url = `${base_url}/api/v1/room/create`

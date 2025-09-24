@@ -57,7 +57,7 @@ public class RoomBusinessService : IRoomBusinessService
         {
             Id = room.Id,
             ShareableSlug = room.ShareableSlug,
-            CreatedAtUtc = room.CreatedAtUtc.ConvertToAest(),
+            CreatedAtUtc = room.CreatedAtUtc,
             Messages = room.Messages
         };
         
@@ -80,10 +80,10 @@ public class RoomBusinessService : IRoomBusinessService
             GetRoomResponse roomResponse = new GetRoomResponse
             {
                 Slug = room.ShareableSlug,
-                CreatedAt = room.CreatedAtUtc.ConvertToAest(),
+                CreatedAt = room.CreatedAtUtc,
                 Messages = room.Messages.Select(message => new MessageApiDto
                 {
-                    CreatedAt = message.CreatedAtUtc.ConvertToAest(),
+                    CreatedAt = message.CreatedAtUtc,
                     MessageContent = JsonSerializer.Deserialize<string>(message.MessageContent),
                     Attachments = message.Attachments.Select(attachment => new AttachmentApiDto
                     {
@@ -91,7 +91,7 @@ public class RoomBusinessService : IRoomBusinessService
                         AttachmentExtension = attachment.AttachmentExtension,
                         AttachmentSizeBytes = attachment.AttachmentSizeBytes,
                         AttachmentUrl = attachment.StorageKey,
-                        CreatedAt = attachment.CreatedAtUtc.ConvertToAest(),
+                        CreatedAt = attachment.CreatedAtUtc,
                     }).ToList()
                 }).ToList()
             };

@@ -38,7 +38,7 @@ public class MessageBusinessService : IMessageBusinessService
 
         MessageApiDto messageApiDto = new MessageApiDto
         {
-            CreatedAt = message.CreatedAtUtc.ConvertToAest(),
+            CreatedAt = message.CreatedAtUtc,
             MessageContent = message.MessageContent,
         };
         

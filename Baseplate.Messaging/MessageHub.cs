@@ -16,7 +16,7 @@ public class MessageHub : Hub, IMessageHub
     {
         ReceiveMessageResponse dto = new ReceiveMessageResponse
         {
-            CreatedDate = createdAt,
+            CreatedAt = createdAt,
             MessageContent = messageContent,
         };
         _hubContext.Clients.Group(roomSlug).SendAsync("ReceiveMessage", dto);
